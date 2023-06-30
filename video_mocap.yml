@@ -1,0 +1,4 @@
+
+detector:
+  det_config: "ckpts/yolov7/yolov7-tiny.yaml"
+  det_checkpoint: "ckpts/yolov7/yolov7-tiny.pt"
