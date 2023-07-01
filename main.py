@@ -14,7 +14,7 @@ from modules.volume.volume import VolumeEstimation
 from modules.calories.calories import Calories
 
 from utils.profile.time import log_time_consuming, time_synchronized
-from utils.visualization.draw_bbox import draw_bbox
+from utils.visualization.draw_bbox import draw_bbox, draw_segmentation
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -37,10 +37,8 @@ if __name__ == "__main__":
     segment = FoodSegmentation(config, device)
     detector = FoodDetector(config, device)
     classifier = FoodClassifier(config, device)
-    estimation = VolumeEstimation(config, device)
-    calories = Calories(config, device)
-    render = Render()
-
+    estimation = VolumeEstimation(config, device)#立体匹配
+    calories = Calories(config, device)#建数据库
 
     detection_results = []
     segmentation_results = []

@@ -1,22 +1,22 @@
-import cv2
-import numpy as np
-import torch
-import torch.nn as nn
+from models.FoodRetrieval.utils import generate_patch_image
+from model.FoodRetrieval.FoodRetrieval import FoodRetrieval
 
-from models.yolov7.common import Conv
-from models.yolov7.general import non_max_suppression, scale_coords
-from models.yolov7.yolo import Model
 
 
 class FoodClassifier():
 
     def __init__(self, config, device):
         self.device = device
-        
+        self.retrieval = FoodRetrieval(config, device)
+    
 
    
     def __call__(self, image, detection_result):
-        
+        results = []
+        for bbox in detection_result:
+            img = generate_patch_image(image, bbox)
+            name = self.retrieval.retrieval(img)
+            results += [name]
         return results
 
         
