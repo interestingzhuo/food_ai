@@ -24,13 +24,14 @@ class FoodRetrieval():
         self.gallery_list = config["retrieval"]["gallery_list"]
         self.top_k = config["retrieval"]["top_k"]
         
+
         self.conduct_gallery(config)
         
         print('#images in database:', self.gpu_index.ntotal)
         self.f_norm = normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
         self.normal_transform = []
         self.imsize = 224
-        self.normal_transform.extend([transforms.Resize(256), transforms.CenterCrop(self.imsize)])
+        self.normal_transform.extend([transforms.Resize(config["retrieval"]["input_shape"]), transforms.CenterCrop(self.imsize)])
         self.normal_transform.extend([transforms.ToTensor(), normalize])
         self.normal_transform = transforms.Compose(self.normal_transform)
         self.labels = []
