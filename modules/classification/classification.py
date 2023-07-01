@@ -1,5 +1,5 @@
 from models.FoodRetrieval.utils import generate_patch_image
-from model.FoodRetrieval.FoodRetrieval import FoodRetrieval
+from models.FoodRetrieval.FoodRetrieval import FoodRetrieval
 
 
 
