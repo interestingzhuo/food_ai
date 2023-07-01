@@ -149,11 +149,9 @@ class ImagesForCls(data.Dataset):
 
 class ImagesForTest(data.Dataset):
 
-    def __init__(self, ims_root, file_list, imsize=224, bbxs=None, transform=None):
+    def __init__(self, file_list, imsize=224, bbxs=None, transform=None):
 
-
-        self.root = ims_root
-        self.images_fn, self.hash_code = self.get_imgs(self.root,file_list)
+        self.images_fn, self.labels = self.get_imgs(file_list)
         self.imsize = imsize
         self.transform = transform
         self.f_norm = normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
@@ -161,17 +159,13 @@ class ImagesForTest(data.Dataset):
         self.normal_transform.extend([transforms.Resize(256), transforms.CenterCrop(imsize)])
         self.normal_transform.extend([transforms.ToTensor(), normalize])
         self.normal_transform = transforms.Compose(self.normal_transform)
-    def get_imgs(self,ims_root,file_list):
+    def get_imgs(self,file_list):
 
         with open(file_list) as f:
             lines = f.readlines()
-        lines = lines[1:]
-        files = [line.strip().split(',')[-1] for line in lines]
-        hashs = [line.strip().split(',')[0] for line in lines]
-
-        images=[os.path.join(ims_root, image) for image in files]
-
-        return images, hashs
+        images = [line.strip().split(',')[0] for line in lines]
+        labels = [line.strip().split(',')[1] for line in lines]
+        return images, labels
 
 
     def ensure_3dim(self, img):
@@ -185,7 +179,7 @@ class ImagesForTest(data.Dataset):
         img = self.ensure_3dim(Image.open(self.images_fn[index]))
         img = self.normal_transform(img)
 
-        return img, self.hash_code[index]
+        return img, self.labels[index]
 
     def __len__(self):
         return len(self.images_fn)

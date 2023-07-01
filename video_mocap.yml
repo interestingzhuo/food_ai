@@ -2,3 +2,11 @@
 detector:
   det_config: "ckpts/yolov7/yolov7-tiny.yaml"
   det_checkpoint: "ckpts/yolov7/yolov7-tiny.pt"
+retrieval:
+  retrieval_checkpoint: "ckpts/retrieval/Food1k_deit_pre_arcface.pth.tar"
+  input_shape: 256
+  dim: 128
+  batch_size: 32
+  gallery_list: "gallery.txt"
+  top_k: 10
+
