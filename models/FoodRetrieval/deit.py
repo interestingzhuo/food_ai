@@ -1,6 +1,6 @@
 import timm
 import torch.nn as nn
-from pooling import *
+from .pooling import *
 
 
 

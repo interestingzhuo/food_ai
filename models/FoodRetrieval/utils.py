@@ -6,7 +6,8 @@ from tqdm import tqdm
 import numpy as np
 import random
 import torch.nn.functional as F
-import pdb
+import cv2
+import math
 
 class Warp(object):
     def __init__(self, size, interpolation=Image.BILINEAR):
@@ -413,17 +414,6 @@ def gen_adj(A):
     return adj
 
 
-import numpy as np
-import cv2
-import random
-from config import cfg
-import math
-from utils.human_models import smpl_x, smpl
-from utils.transforms import cam2pixel, transform_joint_to_other_db
-from plyfile import PlyData, PlyElement
-import torch
-
-
 
 def sanitize_bbox(bbox, img_width, img_height):
     x, y, w, h = bbox
@@ -448,7 +438,7 @@ def process_bbox(bbox, img_width, img_height):
     h = bbox[3]
     c_x = bbox[0] + w/2.
     c_y = bbox[1] + h/2.
-    aspect_ratio = cfg.input_img_shape[1]/cfg.input_img_shape[0]
+    aspect_ratio = 1
     if w > aspect_ratio * h:
         h = w / aspect_ratio
     elif w < aspect_ratio * h:

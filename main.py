@@ -3,6 +3,7 @@ import copy
 import os
 
 import mmcv
+from PIL import Image
 import torch
 from omegaconf import OmegaConf
 from tqdm import tqdm
@@ -14,7 +15,7 @@ from modules.volume.volume import VolumeEstimation
 from modules.calories.calories import Calories
 
 from utils.profile.time import log_time_consuming, time_synchronized
-from utils.visualization.draw_bbox import draw_bbox, draw_segmentation
+from utils.visualization.draw_bbox import draw_bbox
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -29,10 +30,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     image_name = os.path.splitext(os.path.basename(args.image_path))[0]
-    config = OmegaConf.load("image_mocap.yml")
+    config = OmegaConf.load("video_mocap.yml")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    test_image = mmcv.imread(args.image_path)
+    # test_image = mmcv.imread(args.image_path)
+    test_image = [Image.open(args.image_path)]
+
 
     segment = FoodSegmentation(config, device)
     detector = FoodDetector(config, device)
@@ -97,4 +100,4 @@ if __name__ == "__main__":
 
             log_time_consuming(time_consuming)
             draw_bbox(test_image, detection_results)
-            draw_segmentation(test_image, segmentation_results)
+            # draw_segmentation(test_image, segmentation_results)
