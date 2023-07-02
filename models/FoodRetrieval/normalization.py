@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-import functional as LF
+from . import functional as LF
 
 # --------------------------------------
 # Normalization layers

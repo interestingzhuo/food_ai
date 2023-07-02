@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 from torch.nn.parameter import Parameter
 
-import functional as LF
-from normalization import L2N
+from . import functional as LF
+from .normalization import L2N
 
 # --------------------------------------
 # Pooling layers
