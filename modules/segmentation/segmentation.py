@@ -1,5 +1,5 @@
 from ultralytics import SAM
-from models.fastsam import FastSAM 
+from models.fastsam import FastSAM, FastSAMPrompt 
 
 
 class FoodSegmentation():
@@ -16,7 +16,7 @@ class FoodSegmentationFastSAM():
 
     def __init__(self, config, device):
         self.device = device
-        self.model = FastSAM(config['segmentation']['seg_checkpoint'])
+        self.model = FastSAM(config["segmentation"]["seg_checkpoint"])
        
     def __call__(self, img):
         results = self.model(
