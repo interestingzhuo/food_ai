@@ -24,7 +24,7 @@ class FoodSegmentationFastSAM():
 
     def __init__(self, config, device):
         self.device = device
-        self.model = FastSAM(args.model_path)
+        self.model = FastSAM('FastSAM-s.pt')
        
     def __call__(self, img):
         results = self.model(
