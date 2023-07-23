@@ -11,6 +11,7 @@ from tqdm import tqdm
 from modules.segmentation.segmentation import FoodSegmentation
 from modules.detection.detector import FoodDetector
 from modules.classification.classification import FoodClassifier
+from modules.depth.depth import Depth
 from modules.volume.volume import VolumeEstimation
 from modules.calories.calories import Calories
 
@@ -40,30 +41,29 @@ if __name__ == "__main__":
     segment = FoodSegmentation(config, device)
     detector = FoodDetector(config, device)
     classifier = FoodClassifier(config, device)
+    depth_estimator = Depth(config, device)
     estimation = VolumeEstimation(config, device)#立体匹配
     calories = Calories(config, device)#建数据库
 
     detection_results = []
     segmentation_results = []
     classifier_results = []
+    depth_results = []
     volume_results = []
     calories_results = []
 
 
     time_consuming = {
-        "body_detection": [],
-        "hand_detection": [],
-        "body3d": [],
-        "hand3d": [],
-        "fusion": [],
-        "smooth": [],
-        "retarget": [],
-        "render": [],
+        "detection": [],
+        "segmentation": [],
+        "Depth": [],
+        "Volume": [],
+        "Calories": [],
         "all": [],
     }
 
     with torch.no_grad():
-        for idx, image in tqdm(enumerate(test_image), total=len(test_image)):
+        for idx, image, calibration in tqdm(enumerate(test_image), total=len(test_image)):
             # detection
             t1 = time_synchronized()
             detection_result = detector(image)
@@ -73,25 +73,30 @@ if __name__ == "__main__":
             # recognition
             t3 = time_synchronized()
             classifier_result = classifier(image, detection_result)
-            # Volume Estimation
+            # Depth Estimation
             t4 = time_synchronized()
-            volume_result = estimation(image, segmentation_result)
-            # Calories Estimation
+            depth_result = depth_estimator(image, calibration)
+            # Volume Estimation
             t5 = time_synchronized()
-            calories_result = calories(volume_result, segmentation_result, detection_result)
+            volume_result = estimation(depth_result, segmentation_result, calibration)
+            # Calories Estimation
             t6 = time_synchronized()
+            calories_result = calories(volume_result, segmentation_result, detection_result)
+            t7 = time_synchronized()
            
 
             time_consuming["detection"].append(t2 - t1)
             time_consuming["segmentation"].append(t3 - t2)
             time_consuming["recognition"].append(t4 - t3)
-            time_consuming["Volume"].append(t5 - t4)
-            time_consuming["Calories"].append(t6 - t5)
-            time_consuming["all"].append(t6 - t1)
+            time_consuming["Depth"].append(t5 - t4)
+            time_consuming["Volume"].append(t6 - t5)
+            time_consuming["Calories"].append(t7 - t6)
+            time_consuming["all"].append(t7 - t1)
 
             detection_results.append(detection_result)
             segmentation_results.append(segmentation_result)
             classifier_results.append(classifier_result)
+            depth_results.append(depth_result)
             volume_results.append(volume_result)
             calories_results.append(calories_result)
 

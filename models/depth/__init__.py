@@ -1,0 +1,1 @@
+from .CFNet.models import __models__
