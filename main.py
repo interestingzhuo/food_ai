@@ -38,12 +38,12 @@ if __name__ == "__main__":
     test_image = [Image.open(args.image_path)]
 
 
-    segment = FoodSegmentation(config, device)
-    detector = FoodDetector(config, device)
-    classifier = FoodClassifier(config, device)
+    # segment = FoodSegmentation(config, device)
+    # detector = FoodDetector(config, device)
+    # classifier = FoodClassifier(config, device)
     depth_estimator = Depth(config, device)
-    estimation = VolumeEstimation(config, device)#立体匹配
-    calories = Calories(config, device)#建数据库
+    # estimation = VolumeEstimation(config, device)#立体匹配
+    # calories = Calories(config, device)#建数据库
 
     detection_results = []
     segmentation_results = []
@@ -61,24 +61,26 @@ if __name__ == "__main__":
         "Calories": [],
         "all": [],
     }
-
+    import pdb
+    pdb.set_trace()
     with torch.no_grad():
-        for idx, image, calibration in tqdm(enumerate(test_image), total=len(test_image)):
+        for idx, image in tqdm(enumerate(test_image), total=len(test_image)):
             # detection
             t1 = time_synchronized()
-            detection_result = detector(image)
+            # detection_result = detector(image)
             # segmentation
             t2 = time_synchronized()
-            segmentation_result = segment(image)
+            # segmentation_result = segment(image)
             # recognition
             t3 = time_synchronized()
-            classifier_result = classifier(image, detection_result)
+            # classifier_result = classifier(image, detection_result)
             # Depth Estimation
             t4 = time_synchronized()
-            depth_result = depth_estimator(image, calibration)
+            calibration = None
+            depth_result = depth_estimator([image,image], calibration)
             # Volume Estimation
             t5 = time_synchronized()
-            volume_result = estimation(depth_result, segmentation_result, calibration)
+            # volume_result = estimation(depth_result, segmentation_result, calibration)
             # Calories Estimation
             t6 = time_synchronized()
             calories_result = calories(volume_result, segmentation_result, detection_result)
@@ -93,12 +95,12 @@ if __name__ == "__main__":
             time_consuming["Calories"].append(t7 - t6)
             time_consuming["all"].append(t7 - t1)
 
-            detection_results.append(detection_result)
-            segmentation_results.append(segmentation_result)
-            classifier_results.append(classifier_result)
-            depth_results.append(depth_result)
-            volume_results.append(volume_result)
-            calories_results.append(calories_result)
+            # detection_results.append(detection_result)
+            # segmentation_results.append(segmentation_result)
+            # classifier_results.append(classifier_result)
+            # depth_results.append(depth_result)
+            # volume_results.append(volume_result)
+            # calories_results.append(calories_result)
 
 
             torch.cuda.empty_cache()

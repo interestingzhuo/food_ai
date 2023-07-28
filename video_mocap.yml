@@ -3,10 +3,10 @@ detector:
   det_config: "ckpts/yolov7/yolov7-tiny.yaml"
   det_checkpoint: "xxx"
 segmentation:
-  seg_checkpoint: "ckpts/yolov7/yolov7-tiny.pt"
+  seg_checkpoint: "ckpts/sam/sam_b.pt"
 
 depth:
-  ckpt: "ckpt/cenet/lastest.pth"
+  ckpt: "ckpts/depth/finetuning_model"
   model: "cfnet"
   maxdisp: 192
 
