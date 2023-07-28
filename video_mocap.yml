@@ -1,9 +1,9 @@
 
 detector:
-  det_config: "ckpts/yolov7/yolov7-tiny.yaml"
-  det_checkpoint: "xxx"
+  det_config: "ckpts/yolov7/yolov7-w6.yaml"
+  det_checkpoint: "ckpts/yolov7/yolov7-w6.pt"
 segmentation:
-  seg_checkpoint: "ckpts/yolov7/yolov7-tiny.pt"
+  seg_checkpoint: "**"
 
 depth:
   ckpt: "ckpt/cenet/lastest.pth"
