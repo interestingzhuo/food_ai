@@ -3,19 +3,18 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from models.yolov7.common import Conv
-from models.yolov7.general import non_max_suppression, scale_coords
-from models.yolov7.yolo import Model
+from models.yolov7.models.common import Conv
+from models.yolov7.utils.general import non_max_suppression, scale_coords
+from models.yolov7.models.yolo import Model
 from ultralytics import SAM
 from models.fastsam import FastSAM, FastSAMPrompt 
-
 
 
 class FoodSegmentation():
 
     def __init__(self, config, device):
         self.device = device
-        self.model = SAM('sam_b.pt')
+        self.model = SAM('/mnt/data2/ai_food_pth/sam_b.pt')
        
     def __call__(self, img):
         results = self.model(img)

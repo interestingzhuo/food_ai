@@ -163,6 +163,7 @@ class ImagesForTest(data.Dataset):
 
         with open(file_list) as f:
             lines = f.readlines()
+        print(lines)
         images = [line.strip().split(',')[0] for line in lines]
         labels = [line.strip().split(',')[1] for line in lines]
         return images, labels
