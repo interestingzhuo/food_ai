@@ -1,5 +1,5 @@
 
-from models.depth import __models__
+from model.depth import __models__
 import torch
 
 class Depth():

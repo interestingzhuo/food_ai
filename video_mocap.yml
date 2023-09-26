@@ -1,7 +1,8 @@
 
 detector:
-  det_config: "ckpts/yolov7/yolov7-w6.yaml"
-  det_checkpoint: "ckpts/yolov7/yolov7-w6.pt"
+  det_config: "/mnt/data/chaoran/food_ai_main/ckpts/yolov7/yolov7-w6.yaml"
+  det_checkpoint: "/mnt/data/chaoran/food_ai_main/ckpts/yolov7/yolov7-w6_best.pt"
+  
 segmentation:
   seg_checkpoint: "**"
 
@@ -12,10 +13,10 @@ depth:
 
 
 retrieval:
-  retrieval_checkpoint: "ckpts/retrieval/Food1k_deit_pre_arcface.pth.tar"
+  retrieval_checkpoint: "/mnt/data/chaoran/food_ai_main/ckpts/retrieval/checkpoint_deit_food500.pth.tar"
   input_shape: 256
   dim: 128
   batch_size: 256
   gallery_list: "gallery.txt"
-  top_k: 10
+  top_k: 5
 
