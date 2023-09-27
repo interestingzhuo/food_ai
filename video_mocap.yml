@@ -6,7 +6,7 @@ segmentation:
   seg_checkpoint: "ckpts/sam/sam_b.pt"
 
 depth:
-  ckpt: "ckpt/cenet/lastest.pth"
+  ckpt: "ckpts/depth/finetuning_model"
   model: "cfnet"
   maxdisp: 192
 
