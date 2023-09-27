@@ -3,8 +3,8 @@ import sklearn.neighbors
 from sklearn import linear_model
 from scipy.spatial.transform import Rotation
 
-from . import config
-from . import utils
+from .. import config
+from .. import utils
 
 
 class volume():

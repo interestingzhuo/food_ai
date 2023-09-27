@@ -1,19 +1,27 @@
+import sys
+sys.path.insert(0,'/mnt/data/chaoran/food_ai_main/model/FoodRetrieval')
+print(sys)
 import torchvision.transforms as transforms
 from .dataset import *
 import torch
 from .utils import *
 import time
 import faiss
+import numpy as np
 from tqdm import tqdm
 from .deit import Network
-
+from PIL import Image
 class FoodRetrieval():
     def __init__(self, config, device):
         self.device = device
         self.model = Network()
         checkpoint = torch.load(config["retrieval"]["retrieval_checkpoint"])
+        new_checkpoint = {}
 
-        self.model.load_state_dict(checkpoint['state_dict'])
+        for k,v in checkpoint['state_dict'].items():
+            k = k.replace('module.model', 'model')
+            new_checkpoint[k] = v
+        self.model.load_state_dict(new_checkpoint)
         self.model.to(self.device)
         self.model.eval()
 
@@ -59,6 +67,9 @@ class FoodRetrieval():
 
 
     def retrieval(self, img):
+        img = Image.fromarray((img * 1).astype(np.uint8)).convert('RGB')
+        #image = Image.new("RGB", np.shape(img))
+        #img = image.putdata(img)
         img = self.normal_transform(img)
         img = img.to(self.device)
         img = img.contiguous().unsqueeze(0)
