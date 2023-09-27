@@ -1,12 +1,13 @@
+import sys
 import cv2
 import numpy as np
 import torch
 import torch.nn as nn
 
-from models.yolov7.common import Conv
-from models.yolov7.general import non_max_suppression, scale_coords
-from models.yolov7.yolo import Model
-
+from models.yolov7.models.experimental import attempt_load
+from models.yolov7.models.common import Conv
+from models.yolov7.utils.general import non_max_suppression, scale_coords
+from models.yolov7.models.yolo import Model
 
 class FoodDetector():
 
@@ -15,9 +16,11 @@ class FoodDetector():
         self.half = True
 
         self.det_model = Model(cfg=config["detector"]["det_config"])
-        self.det_model.fuse()
-
-        self.det_model.load_model(config["detector"]["det_checkpoint"], self.device)
+        #v7的test中没发现额外调用.fuse()的情况，因此注释掉了
+        #self.det_model.fuse()
+        #这部分采用的也是v7原始的模型load方法
+        self.attempt_load = attempt_load(config["detector"]["det_checkpoint"], map_location=self.device)
+        #self.det_model.load_model(config["detector"]["det_checkpoint"], self.device)
         self.det_model.to(self.device)
         self.det_model.eval()
 
@@ -34,7 +37,8 @@ class FoodDetector():
 
         self.test_shape = (640, 640)
         self.stride = int(self.det_model.stride.max())
-        self.conf_thres = 0.50
+        #conf_thres没有能高于0.07的
+        self.conf_thres = 0.07
         self.iou_thres = 0.45
         self.agnostic_nms = False
 
@@ -44,7 +48,7 @@ class FoodDetector():
 
     def preprocessing(self, img):
         self.origin_img_shape = img.shape
-
+        print('self.origin_img_shape',self.origin_img_shape)
         # Resize and pad image while meeting stride-multiple constraints
         self.origin_shape = img.shape[:2]  # current shape [height, width]
 
@@ -71,7 +75,7 @@ class FoodDetector():
         img = img.half() if self.half else img.float()
         img /= 255.0
         self.test_shape = img.shape[2:]  # height, width
-
+        print(img.shape)
         return img
 
     def postprocessing(self, pred):
@@ -80,6 +84,7 @@ class FoodDetector():
         max_area = 0
         bbox = None
         for det in pred:
+            print(det)
             # Rescale boxes from img_size to origin img_size
             det[:, :4] = scale_coords(self.test_shape, det[:, :4], self.origin_shape).round()
             for *xyxy, _, _ in reversed(det):
