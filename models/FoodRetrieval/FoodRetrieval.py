@@ -1,6 +1,5 @@
 import sys
-sys.path.insert(0,'/mnt/data/chaoran/food_ai_main/model/FoodRetrieval')
-print(sys)
+sys.path.insert(0,'./models/FoodRetrieval')
 import torchvision.transforms as transforms
 from .dataset import *
 import torch
