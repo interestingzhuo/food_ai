@@ -612,11 +612,10 @@ def non_max_suppression(prediction, conf_thres=0.25, iou_thres=0.45, classes=Non
     Returns:
          list of detections, on (n,6) tensor per image [xyxy, conf, cls]
     """
-    if isinstance(prediction, (list, tuple)):
-        prediction = prediction[0]
+
     nc = prediction.shape[2] - 5  # number of classes
-    print('nc',nc)
     xc = prediction[..., 4] > conf_thres  # candidates
+
     # Settings
     min_wh, max_wh = 2, 4096  # (pixels) minimum and maximum box width and height
     max_det = 300  # maximum number of detections per image
@@ -666,7 +665,6 @@ def non_max_suppression(prediction, conf_thres=0.25, iou_thres=0.45, classes=Non
 
         # Filter by class
         if classes is not None:
-            print((x[:, 5:6] == torch.tensor(classes, device=x.device)).any(1))
             x = x[(x[:, 5:6] == torch.tensor(classes, device=x.device)).any(1)]
 
         # Apply finite constraint
