@@ -1,8 +1,9 @@
+import sys
+
 import cv2
 import numpy as np
 import torch
 import torch.nn as nn
-
 from models.yolov7.models.common import Conv
 from models.yolov7.utils.general import non_max_suppression, scale_coords
 from models.yolov7.models.yolo import Model

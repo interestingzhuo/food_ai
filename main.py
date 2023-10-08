@@ -1,5 +1,4 @@
 import sys
-#sys.path.insert(0,'/mnt/data/chaoran/food_ai_main/models/yolov7')多个环境名称存在冲突
 import argparse
 import copy
 import os
@@ -7,11 +6,14 @@ import cv2
 import mmcv
 from PIL import Image
 import torch
+from numpy import random
 from omegaconf import OmegaConf
 from tqdm import tqdm
-
-
-
+from utils.profile.time import log_time_consuming, time_synchronized
+from utils.visualization.draw_bbox import draw_bbox
+sys.path.insert(0,'./models/yolov7')
+print(sys.path)
+from models.yolov7.utils.plots import plot_one_box
 from modules.segmentation.segmentation import FoodSegmentation
 from modules.detection.detector import FoodDetector
 from modules.classification.classification import FoodClassifier
@@ -19,14 +21,11 @@ from modules.classification.classification import FoodClassifier
 #from modules.volume.volume import VolumeEstimation
 #from modules.calories.calories import Calories
 
-from utils.profile.time import log_time_consuming, time_synchronized
-from utils.visualization.draw_bbox import draw_bbox
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_path",
                         type=str,
-                        default="",
+                        default="./data/10030006.jpg",
                         help="iut image path")
     parser.add_argument("--output_path",
                         type=str,
@@ -73,12 +72,15 @@ if __name__ == "__main__":
             # detection
             t1 = time_synchronized()
             detection_result = detector(image)
+            print('detection_result',detection_result)
+            #break
             # segmentation
             t2 = time_synchronized()
             segmentation_result = segment(image)
             # recognition
             t3 = time_synchronized()
             classifier_result = classifier(image, detection_result)
+            print('classifier_result',classifier_result)
             # Depth Estimation
             t4 = time_synchronized()
             #depth_result = depth_estimator(image, calibration)
@@ -106,10 +108,11 @@ if __name__ == "__main__":
             #volume_results.append(volume_result)
             #calories_results.append(calories_result)
 
-
+            colors = [random.randint(0, 255) for _ in range(len(classifier_result))]
             torch.cuda.empty_cache()
-
-            #log_time_consuming(time_consuming)
-            img = draw_bbox(image, detection_result,classifier_result)
-            cv2.imwrite(f'{classifier_result[0]}.jpg',img)
-            # draw_segmentation(test_image, segmentation_results)
+            for index,bbox in enumerate(detection_result):
+                #log_time_consuming(time_consuming)
+                #img = draw_bbox(image, detection_result,classifier_result)
+                plot_one_box(bbox,image, label=classifier_result[index],color=colors[index], line_thickness=2)
+                cv2.imwrite(f'{classifier_result[0]}.jpg',image)
+                # draw_segmentation(test_image, segmentation_results)

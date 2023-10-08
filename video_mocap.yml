@@ -3,7 +3,7 @@ detector:
   det_config: "ckpts/yolov7/yolov7-w6.yaml"
   det_checkpoint: "ckpts/yolov7/yolov7-w6.pt"
 segmentation:
-  seg_checkpoint: "ckpts/sam/sam_b.pt"
+  seg_checkpoint: "**"
 
 depth:
   ckpt: "ckpts/depth/finetuning_model"
@@ -12,7 +12,7 @@ depth:
 
 
 retrieval:
-  retrieval_checkpoint: "ckpts/retrieval/Food1k_deit_pre_arcface.pth.tar"
+  retrieval_checkpoint: "ckpts/retrieval/checkpoint_deit_food500.pth.tar"
   input_shape: 256
   dim: 128
   batch_size: 256
