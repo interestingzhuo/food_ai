@@ -539,7 +539,6 @@ class Model(nn.Module):
             self.stride = m.stride
             self._initialize_biases()  # only run once
             # print('Strides: %s' % m.stride.tolist())
-        
         if isinstance(m, IDetect):
             s = 256  # 2x min stride
             m.stride = torch.tensor([s / x.shape[-2] for x in self.forward(torch.zeros(1, ch, s, s))])  # forward
@@ -578,7 +577,6 @@ class Model(nn.Module):
         initialize_weights(self)
         self.info()
         logger.info('')
-        
 
     def forward(self, x, augment=False, profile=False):
         if augment:
