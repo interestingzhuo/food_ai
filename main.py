@@ -3,18 +3,18 @@ import argparse
 import copy
 import os
 import cv2
-import mmcv
+#import mmcv
 from PIL import Image
 import torch
 from numpy import random
 from omegaconf import OmegaConf
 from tqdm import tqdm
-from utils.profile.time import log_time_consuming, time_synchronized
-from utils.visualization.draw_bbox import draw_bbox
+from util.profile.time import log_time_consuming, time_synchronized
+from util.visualization.draw_bbox import draw_bbox
 sys.path.insert(0,'./models/yolov7')
 print(sys.path)
 from models.yolov7.utils.plots import plot_one_box
-from modules.segmentation.segmentation import FoodSegmentation
+from modules.segmentation.segmentation import FoodSegmentation,FoodSegmentationFoodSAM,FoodSegmentationFastSAM
 from modules.detection.detector import FoodDetector
 from modules.classification.classification import FoodClassifier
 #from modules.depth.depth import Depth
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--image_path",
                         type=str,
-                        default="./data/10030006.jpg",
+                        default="./data/01.jpg",
                         help="iut image path")
     parser.add_argument("--output_path",
                         type=str,
@@ -34,6 +34,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     image_name = os.path.splitext(os.path.basename(args.image_path))[0]
+    args.image_name = image_name
     config = OmegaConf.load("video_mocap.yml")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -41,7 +42,8 @@ if __name__ == "__main__":
     test_image = [cv2.imread(args.image_path)]
 
 
-    segment = FoodSegmentation(config, device)
+    #segment = FoodSegmentation(config, device)
+    segment = FoodSegmentationFoodSAM(config, device)
     detector = FoodDetector(config, device)
     classifier = FoodClassifier(config, device)
     #depth_estimator = Depth(config, device)
@@ -72,15 +74,17 @@ if __name__ == "__main__":
             # detection
             t1 = time_synchronized()
             detection_result = detector(image)
-            print('detection_result',detection_result)
+            #print('detection_result',detection_result)
             #break
             # segmentation
             t2 = time_synchronized()
-            segmentation_result = segment(image)
+            segmentation_result,enhanced_mask = segment(image, args)
+            #rint('segmentation_result',segmentation_result)
+            #print('enhanced_mask',enhanced_mask)
             # recognition
             t3 = time_synchronized()
             classifier_result = classifier(image, detection_result)
-            print('classifier_result',classifier_result)
+            #print('classifier_result',classifier_result)
             # Depth Estimation
             t4 = time_synchronized()
             #depth_result = depth_estimator(image, calibration)
@@ -107,12 +111,12 @@ if __name__ == "__main__":
             #depth_results.append(depth_result)
             #volume_results.append(volume_result)
             #calories_results.append(calories_result)
-
+            result_img = cv2.imread(f'./runs/segment/output/{image_name}/enhance_vis.png')
             colors = [random.randint(0, 255) for _ in range(len(classifier_result))]
             torch.cuda.empty_cache()
             for index,bbox in enumerate(detection_result):
                 #log_time_consuming(time_consuming)
                 #img = draw_bbox(image, detection_result,classifier_result)
-                plot_one_box(bbox,image, label=classifier_result[index],color=colors[index], line_thickness=2)
-                cv2.imwrite(f'{classifier_result[0]}.jpg',image)
-                # draw_segmentation(test_image, segmentation_results)
+                plot_one_box(bbox,result_img, label=classifier_result[index],color=colors[index], line_thickness=2)
+                cv2.imwrite(f'{classifier_result[0]}.jpg',result_img)
+            #draw_segmentation(image, segmentation_results)

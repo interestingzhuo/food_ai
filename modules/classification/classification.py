@@ -16,11 +16,11 @@ class FoodClassifier():
     def __call__(self, image, detection_result):
         results = []
         for bbox in detection_result:
-            print('bbox',bbox)
+            #print('bbox',bbox)
             img,_,_ = generate_patch_image(image, bbox, 1.0, 0.0, False, self.input_shape)
             name = self.retrieval.retrieval(img)
             results += [name]
-            print('results',results)
+            #print('results',results)
         return results
 
 

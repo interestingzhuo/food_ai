@@ -3,8 +3,14 @@ detector:
   det_config: "ckpts/yolov7/yolov7-w6.yaml"
   det_checkpoint: "ckpts/yolov7/yolov7-w6.pt"
 segmentation:
-  seg_checkpoint: "**"
-
+  seg_checkpoint: "./sam_b.pt"
+  seg_output: "./runs/segment/output"
+  seg_config: "./models/FoodSAM/configs/SETR_MLA_768x768_80k_base.py"
+  semantic_checkpoint: "./ckpts/foodsam/SETR_MLA/iter_80000.pth"
+  semantic_color_list: "./models/FoodSAM/FoodSAM_tools/color_list.npy"
+  category_txt_list: "./models/FoodSAM/FoodSAM_tools/category_id_files/foodseg103_category_id.txt"
+  aug_test: True
+  
 depth:
   ckpt: "ckpts/depth/finetuning_model"
   model: "cfnet"

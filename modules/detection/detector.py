@@ -83,7 +83,7 @@ class FoodDetector():
         for det in pred:
             # Rescale boxes from img_size to origin img_size
             det[:, :4] = scale_coords(self.test_shape, det[:, :4], self.origin_shape).round()
-            print('det',det[:, :4])
+            #print('det',det[:, :4])
             #for *xyxy, _, _ in reversed(det):
             #    x1, y1, x2, y2 = [xy.cpu().numpy() for xy in xyxy]
             #    area = (x2 - x1) * (y2 - y1)
